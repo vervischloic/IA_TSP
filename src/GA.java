@@ -11,32 +11,29 @@ public class GA {
         Population newPopulation = new Population(pop.populationSize(), false);
 
 
-        // Crossover population
-        // Loop over the new population's size and create individuals from
-        // Current population (select parents, crossover them, add child to population
-        /*
-         *
+        /* Crossover population
+         * Loop over the new population's size and create individuals from
+         * Current population (select parents, crossover them, add child to population
          * Question 1-a: To Complete
-         *
-         *
-         *
-         *
-         *
-         *
          */
-
+        int i;
+        for(i=0;i<pop.populationSize();i++) {
+            newPopulation.saveTour(i, RWS(pop));
+        }
 
         // Mutate the new population a bit to add some new genetic material
         /*
-         *
-         *
-         *
-         * Question 1-b: Mutate new generation
-         *
-         *
-         *
+         *Question 1-b: Mutate new generation
          */
-
+        java.util.Random gnrtor=new java.util.Random(System.currentTimeMillis());
+        for(i=0;i<pop.populationSize();i++) {
+            if(gnrtor.nextDouble()<=mutationRate) {
+                Tour gonnaMutate = newPopulation.getTour(i);
+                mutate(gonnaMutate);
+                newPopulation.saveTour(i, gonnaMutate);
+            }
+        }
+        //
         return newPopulation;
     }
 
@@ -68,7 +65,7 @@ public class GA {
         }
         for (int i=0;i<LSBPoint;i++){
             if (!isCityAlreadyIn(parent1,child)){
-                child.setCity(i,parent1.getCity(i);
+                child.setCity(i,parent1.getCity(i));
             }
         }
 
@@ -103,10 +100,23 @@ public class GA {
     // Mutate a tour using swap mutation
     private static void mutate(Tour tour) {
         /*
-         *
          * Question 3: To complete
-         *
          */
+        int i;
+        City Buffer = new City();
+        for(i=0;i<tour.tourSize();i++){
+            if (Math.random()<mutationRate){
+                if (i==0){
+                    Buffer = tour.getCity(0);
+                    tour.setCity(0,tour.getCity(tour.tourSize()-1));
+                    tour.setCity(tour.tourSize()-1,Buffer);
+                } else {
+                    Buffer = tour.getCity(i);
+                    tour.setCity(i,tour.getCity(i-1));
+                    tour.setCity(i-1,Buffer);
+                }
+            }
+        }
     }
 
     // Selects candidate tour for crossover using tournament method
@@ -128,12 +138,27 @@ public class GA {
     private static Tour RWS(Population pop) {
         ArrayList<Integer> fitness_share = new ArrayList<Integer>();
         Tour candidate = new Tour();
+        int i;
         //Calculate sum of fitness values of all individuals in the population
-
+        double sumFit=0;
+        for(i=0;i<pop.populationSize();i++) {
+            sumFit=sumFit+pop.getTour(i).getFitness();
+        }
         //Calculate and Save fitness share for all individuals in population
-
+        double[] probaSet = new double[pop.populationSize()];
+        for(i=0;i<pop.populationSize();i++) {
+            probaSet[i] = pop.getTour(i).getFitness()/sumFit;
+        }
         //Select individual based on its fitness share value and random generated value between 0 and 1
-
+        java.util.Random generator=new java.util.Random(System.currentTimeMillis());
+        double wheelSpin = generator.nextDouble();
+        double wanderer=0;
+        int j=0;
+        while(wanderer<wheelSpin) {
+            wanderer=wanderer+probaSet[j];
+            j++;
+        }
+        candidate = pop.getTour(j-1);
         //
 
         /*
