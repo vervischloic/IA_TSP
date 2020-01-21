@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class TSP {
+
+public class TSP{
     public static ArrayList<City> destinationCities = new ArrayList<City>();
 
     public static void main(String[] args) {
@@ -18,7 +19,7 @@ public class TSP {
         City lyon = new City(4576,483,"Lyon");
         City bordeaux = new City(4484,-58,"Bordeaux");
         City toulouse = new City(4360,144,"Toulouse");
-        City marseilles = new City(4133,-887,"Marseilles");
+        City marseille = new City(4133,-887,"Marseille");
 
         destinationCities.add(lille);
         destinationCities.add(paris);
@@ -29,7 +30,7 @@ public class TSP {
         destinationCities.add(lyon);
         destinationCities.add(bordeaux);
         destinationCities.add(toulouse);
-        destinationCities.add(marseilles);
+        destinationCities.add(marseille);
 
         // Initialize population
         /*
@@ -42,11 +43,22 @@ public class TSP {
         /*
          * Question 4-c: To complete
          */
-
+        for(int i=0;i<100;i++) {
+            GA.evolvePopulation(pop);
+        }
+       
         // Print final results
         /*
          * Questions 4-d and 4-e: To Complete
          */
+        System.out.println("Final distance of the fittest : "+pop.getFittest().getDistance());
+        
+        int initialDistance=0;
+        for(int j=0;j<destinationCities.size()-1;j++) {
+        	initialDistance += destinationCities.get(j).distanceTo(destinationCities.get(j+1));
+        }
+        System.out.println("Initial distance value :"+initialDistance);
+        System.out.println("Fittest : "+pop.getFittest().toString());
 
     }
 
