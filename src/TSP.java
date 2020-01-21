@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TSP {
     public static ArrayList<City> destinationCities = new ArrayList<City>();
@@ -34,6 +35,8 @@ public class TSP {
         /*
          * Question 4-b: To complete
          */
+
+        Population pop = new Population(50,true);
 
         // Evolve population for 100 generations
         /*
