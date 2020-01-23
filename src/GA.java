@@ -17,7 +17,7 @@ public class GA {
          * Question 1-a: To Complete
          */
         int i;
-        for(i=0;i<pop.populationSize();i++) {
+        for (i = 0; i < pop.populationSize(); i++) {
             newPopulation.saveTour(i, RWS(pop));
         }
 
@@ -25,9 +25,9 @@ public class GA {
         /*
          *Question 1-b: Mutate new generation
          */
-        java.util.Random gnrtor=new java.util.Random(System.currentTimeMillis());
-        for(i=0;i<pop.populationSize();i++) {
-            if(gnrtor.nextDouble()<=mutationRate) {
+        java.util.Random gnrtor = new java.util.Random(System.currentTimeMillis());
+        for (i = 0; i < pop.populationSize(); i++) {
+            if (gnrtor.nextDouble() <= mutationRate) {
                 Tour gonnaMutate = newPopulation.getTour(i);
                 mutate(gonnaMutate);
                 newPopulation.saveTour(i, gonnaMutate);
@@ -42,34 +42,6 @@ public class GA {
         // Create new child tour
         Tour child = new Tour();
 
-        int point1 = (int) Math.random() * parent1.tourSize();
-        int point2 = (int) Math.random() * parent1.tourSize();
-
-        int LSBPoint, MSBPoint;
-        boolean equal = false;
-        if (point1 < point2) {
-            LSBPoint = point1;
-            MSBPoint = point2;
-        }else if(point1 > point2){
-            LSBPoint = point2;
-            MSBPoint = point1;
-        }else{
-            MSBPoint = LSBPoint = point1;
-            equal = true;
-        }
-
-        if(!equal){
-            for (int i=0;i<MSBPoint-LSBPoint;i++){
-                child.setCity(LSBPoint+i, parent1.getCity(LSBPoint+i));
-            }
-        }
-        for (int i=0;i<LSBPoint;i++){
-            if (!isCityAlreadyIn(parent1,child)){
-                child.setCity(i,parent1.getCity(i));
-            }
-        }
-
-
         //---------------------------------------------------------------------------------------------------------
         // Crossover 2 parents using the Davi's Order
         /*
@@ -82,7 +54,43 @@ public class GA {
          */
         //----------------------------------------------------------------------------------------------------------
 
+        int point1 = (int) Math.random() * parent1.tourSize();
+        int point2 = (int) Math.random() * parent1.tourSize();
 
+        int LSBPoint, MSBPoint;
+        boolean equal = false;
+        if (point1 < point2) {
+            LSBPoint = point1;
+            MSBPoint = point2;
+        } else if (point1 > point2) {
+            LSBPoint = point2;
+            MSBPoint = point1;
+        } else {
+            MSBPoint = LSBPoint = point1;
+            equal = true;
+        }
+
+        if (!equal) {
+            for (int i = 0; i < MSBPoint - LSBPoint; i++) {
+                child.setCity(LSBPoint + i, parent1.getCity(LSBPoint + i));
+            }
+        } else {
+            child.setCity(LSBPoint, parent1.getCity(LSBPoint));
+        }
+
+        int j = 0;
+        int k = MSBPoint;
+        for (int i = 0; i < parent1.tourSize(); i++) {
+            if (!isCityAlreadyIn(parent2, child)) {
+                if (child.tourSize() < LSBPoint) {
+                    child.setCity(j, parent2.getCity(i));
+                    j++;
+                } else {
+                    child.setCity(k, parent2.getCity(i));
+                    k++;
+                }
+            }
+        }
         return child;
     }
 
@@ -104,16 +112,16 @@ public class GA {
          */
         int i;
         City Buffer = new City();
-        for(i=0;i<tour.tourSize();i++){
-            if (Math.random()<mutationRate){
-                if (i==0){
+        for (i = 0; i < tour.tourSize(); i++) {
+            if (Math.random() < mutationRate) {
+                if (i == 0) {
                     Buffer = tour.getCity(0);
-                    tour.setCity(0,tour.getCity(tour.tourSize()-1));
-                    tour.setCity(tour.tourSize()-1,Buffer);
+                    tour.setCity(0, tour.getCity(tour.tourSize() - 1));
+                    tour.setCity(tour.tourSize() - 1, Buffer);
                 } else {
                     Buffer = tour.getCity(i);
-                    tour.setCity(i,tour.getCity(i-1));
-                    tour.setCity(i-1,Buffer);
+                    tour.setCity(i, tour.getCity(i - 1));
+                    tour.setCity(i - 1, Buffer);
                 }
             }
         }
@@ -140,25 +148,25 @@ public class GA {
         Tour candidate = new Tour();
         int i;
         //Calculate sum of fitness values of all individuals in the population
-        double sumFit=0;
-        for(i=0;i<pop.populationSize();i++) {
-            sumFit=sumFit+pop.getTour(i).getFitness();
+        double sumFit = 0;
+        for (i = 0; i < pop.populationSize(); i++) {
+            sumFit = sumFit + pop.getTour(i).getFitness();
         }
         //Calculate and Save fitness share for all individuals in population
         double[] probaSet = new double[pop.populationSize()];
-        for(i=0;i<pop.populationSize();i++) {
-            probaSet[i] = pop.getTour(i).getFitness()/sumFit;
+        for (i = 0; i < pop.populationSize(); i++) {
+            probaSet[i] = pop.getTour(i).getFitness() / sumFit;
         }
         //Select individual based on its fitness share value and random generated value between 0 and 1
-        java.util.Random generator=new java.util.Random(System.currentTimeMillis());
+        java.util.Random generator = new java.util.Random(System.currentTimeMillis());
         double wheelSpin = generator.nextDouble();
-        double wanderer=0;
-        int j=0;
-        while(wanderer<wheelSpin) {
-            wanderer=wanderer+probaSet[j];
+        double wanderer = 0;
+        int j = 0;
+        while (wanderer < wheelSpin) {
+            wanderer = wanderer + probaSet[j];
             j++;
         }
-        candidate = pop.getTour(j-1);
+        candidate = pop.getTour(j - 1);
         //
 
         /*
