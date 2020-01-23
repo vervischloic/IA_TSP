@@ -53,12 +53,12 @@ public class GA {
          *
          */
         //----------------------------------------------------------------------------------------------------------
-
-        int point1 = (int) Math.random() * parent1.tourSize();
-        int point2 = (int) Math.random() * parent1.tourSize();
-
         int LSBPoint, MSBPoint;
         boolean equal = false;
+
+        int point1 = (int) (Math.random() * parent1.tourSize());
+        int point2 = (int) (Math.random() * parent1.tourSize());
+
         if (point1 < point2) {
             LSBPoint = point1;
             MSBPoint = point2;
@@ -79,27 +79,32 @@ public class GA {
         }
 
         int j = 0;
-        int k = MSBPoint;
         for (int i = 0; i < parent1.tourSize(); i++) {
-            if (!isCityAlreadyIn(parent2, child)) {
-                if (child.tourSize() < LSBPoint) {
+            if (!isCityAlreadyIn(parent2.getCity(i), child)) {
+                if (child.getCity(j) == null) {
                     child.setCity(j, parent2.getCity(i));
                     j++;
-                } else {
-                    child.setCity(k, parent2.getCity(i));
-                    k++;
+                }else{
+                    j=MSBPoint;
+                    child.setCity(j, parent2.getCity(i));
+                    j++;
                 }
             }
         }
+        System.out.println("--------------------------------------------------------");
+        System.out.println(child);
+        System.out.println("--------------------------------------------------------");
+        System.out.println(parent1);
+        System.out.println("--------------------------------------------------------");
+        System.out.println(parent2);
+        System.out.println("--------------------------------------------------------");
         return child;
     }
 
-    private static boolean isCityAlreadyIn(Tour parent, Tour child) {
+    private static boolean isCityAlreadyIn(City parentCity, Tour child) {
         for (int i = 0; i < child.tourSize(); i++) {
-            for (int j = 0; j < parent.tourSize(); i++) {
-                if (child.getCity(i) == parent.getCity(j)) {
-                    return true;
-                }
+            if (child.getCity(i) == parentCity) {
+                return true;
             }
         }
         return false;

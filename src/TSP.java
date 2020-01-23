@@ -39,6 +39,8 @@ public class TSP{
 
         Population pop = new Population(50,true);
 
+        GA.crossover(pop.getTour(0),pop.getTour(1));
+
         // Evolve population for 100 generations
         /*
          * Question 4-c: To complete
@@ -57,7 +59,7 @@ public class TSP{
         for(int j=0;j<destinationCities.size()-1;j++) {
         	initialDistance += destinationCities.get(j).distanceTo(destinationCities.get(j+1));
         }
-        System.out.println("Initial distance value :"+initialDistance);
+        System.out.println("Initial distance value : "+initialDistance);
         System.out.println("Fittest : "+pop.getFittest().toString());
 
     }
